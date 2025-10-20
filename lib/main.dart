@@ -48,6 +48,17 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void captureImage() async {
+    XFile? selectedImage = await imagePicker.pickImage(source: ImageSource.camera);
+
+    if (selectedImage != null) {
+      image = File(selectedImage.path);
+      setState(() {
+        image;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton(
                 onPressed: () {
                   chooseImage();
+                },
+                onLongPress: () {
+                  captureImage();
                 },
                 child: Text('Choose/Capture'),
               ),
