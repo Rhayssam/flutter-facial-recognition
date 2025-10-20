@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,12 +28,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   File? image;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  late ImagePicker imagePicker;
+
+  @override
+  void initState() {
+    super.initState();
+    imagePicker = ImagePicker();
+  }
+
+  chooseImage() async {
+    XFile? selectedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (selectedImage != null) {
+      image = File(selectedImage.path);
+      setState(() {
+        image;
+      });
+    }
   }
 
   @override
@@ -42,18 +55,25 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Center(child: Text(widget.title)),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            image == null
-                ? Icon(
-                    Icons.image_outlined,
-                    size: 150,
-                  )
-                : Image.file(image!),
-            ElevatedButton(onPressed: () {}, child: Text('Choose/Capture')),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              image == null
+                  ? Icon(
+                      Icons.image_outlined,
+                      size: 150,
+                    )
+                  : Image.file(image!),
+              ElevatedButton(
+                onPressed: () {
+                  chooseImage();
+                },
+                child: Text('Choose/Capture'),
+              ),
+            ],
+          ),
         ),
       ),
     );
